@@ -21,4 +21,4 @@ COPY --from=builder /app/backend/prisma ./backend/prisma
 COPY docs/openapi.yaml /app/docs/openapi.yaml
 EXPOSE 5000
 WORKDIR /app/backend
-CMD ["node", "dist/server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run prisma:seed && node dist/server.js"]
