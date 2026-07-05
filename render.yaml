@@ -21,7 +21,7 @@ services:
         sync: false # Set manually in Render dashboard if needed
 
   # 2. Standalone Worker 1
-  - type: worker
+  - type: web
     name: scheduler-worker-1
     plan: free
     env: docker
@@ -38,7 +38,7 @@ services:
         value: worker-1
 
   # 3. Standalone Worker 2
-  - type: worker
+  - type: web
     name: scheduler-worker-2
     plan: free
     env: docker

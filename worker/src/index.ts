@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import os from 'os';
 import crypto from 'crypto';
+import http from 'http';
 
 // Load env vars from root or local
 dotenv.config({ path: '../.env' });
@@ -246,6 +247,15 @@ async function handleShutdown(signal: string) {
 async function main() {
   try {
     await registerWorker();
+
+    // Start dummy HTTP health check server for Render Free plan port-binding check
+    const healthPort = process.env.PORT || '10000';
+    http.createServer((req, res) => {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end('Worker Node Active');
+    }).listen(healthPort, () => {
+      console.log(`[Worker Health] Port-binding server active on port ${healthPort}`);
+    });
     
     // Start heartbeat loop
     heartbeatInterval = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL_MS);
