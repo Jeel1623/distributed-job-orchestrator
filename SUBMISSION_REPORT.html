@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Academic Submission: Distributed Job Orchestrator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    @page {
+      size: A4;
+      margin: 20mm 20mm 25mm 20mm;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #2d3748;
+      line-height: 1.6;
+      font-size: 14px;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1, h2, h3, h4 {
+      color: #1a202c;
+      font-weight: 700;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      page-break-after: avoid;
+    }
+
+    h1 {
+      font-size: 28px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 6px;
+      color: #2b6cb0;
+    }
+
+    h3 {
+      font-size: 15px;
+      color: #4a5568;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 1.2em;
+      text-align: justify;
+    }
+
+    /* Code Block Formatting */
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background-color: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+    }
+
+    code {
+      padding: 2px 4px;
+      color: #c53030;
+      background-color: #fff5f5;
+      border: 1px solid #fed7d7;
+    }
+
+    pre {
+      padding: 15px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-bottom: 1.5em;
+      page-break-inside: avoid;
+    }
+
+    pre code {
+      padding: 0;
+      color: inherit;
+      background-color: transparent;
+      border: none;
+    }
+
+    /* Table Formatting */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background-color: #ebf8ff;
+      color: #2b6cb0;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f7fafc;
+    }
+
+    /* Page Breaks and Layout helpers */
+    .page-break {
+      page-break-before: always;
+    }
+
+    .cover-page {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      page-break-after: always;
+      padding-top: 50mm;
+    }
+
+    .cover-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #1a365d;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .cover-subtitle {
+      font-size: 18px;
+      color: #4a5568;
+      margin-bottom: 60px;
+      font-weight: 300;
+    }
+
+    .cover-metadata {
+      margin-top: auto;
+      border-top: 2px solid #e2e8f0;
+      padding-top: 20px;
+      font-size: 13px;
+      color: #718096;
+    }
+
+    .cover-metadata table {
+      width: 50%;
+      margin-bottom: 0;
+    }
+
+    .cover-metadata table td {
+      border: none;
+      padding: 4px 0;
+    }
+
+    .cover-metadata table tr {
+      background: none !important;
+    }
+
+    .alert {
+      padding: 12px 15px;
+      background-color: #ebf8ff;
+      border-left: 4px solid #3182ce;
+      border-radius: 4px;
+      margin-bottom: 1.5em;
+      page-break-inside: avoid;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #2b6cb0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= COVER PAGE ================= -->
+  <div class="cover-page">
+    <div class="cover-title">Distributed Job Orchestrator</div>
+    <div class="cover-subtitle">A Production-Grade, Concurrency-Safe Distributed Task Scheduling & Dependency Flow Platform</div>
+    
+    <div style="margin-top: 40px; font-size: 15px; color: #4a5568;">
+      <strong>Academic Submission Report</strong><br>
+      Evaluation Criteria: Concurrency Safety, System Completeness, 3NF Database Design, Fault Tolerance.
+    </div>
+
+    <div class="cover-metadata">
+      <table>
+        <tr>
+          <td><strong>Subject:</strong></td>
+          <td>Distributed Systems & Database Design</td>
+        </tr>
+        <tr>
+          <td><strong>Submission Date:</strong></td>
+          <td>July 5, 2026</td>
+        </tr>
+        <tr>
+          <td><strong>Platform Status:</strong></td>
+          <td>Fully Functional (End-to-End)</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= SECTION 1 ================= -->
+  <h2>1. Executive Summary & Architecture</h2>
+  <p>
+    This project presents a highly scalable, production-grade distributed job scheduling and orchestration platform designed to handle background tasks under heavy concurrent loads. The system implements a robust decoupled monorepo architecture consisting of an Express API server, independent worker daemons, and an interactive React-based administration dashboard.
+  </p>
+  <p>
+    Unlike conventional queues that rely on memory-based brokers (such as Redis) which are prone to data loss upon node crashes, this platform uses a relational database model in 3rd Normal Form (3NF) built on PostgreSQL. Transaction isolation and database row-level locking are leveraged to guarantee atomic operations, preventing double-claiming of jobs and resource starvation under distributed horizontal scaling.
+  </p>
+
+  <div class="alert">
+    <div class="alert-title">Core Architecture Features</div>
+    <ul>
+      <li><strong>Atomic claiming</strong> via PostgreSQL <code>FOR UPDATE SKIP LOCKED</code> row-level locks.</li>
+      <li><strong>DAG-based Job Dependencies</strong> preventing child executions from starting before parent tasks complete.</li>
+      <li><strong>Sliding-Window Telemetry</strong> capturing worker memory utilization and CPU metrics.</li>
+      <li><strong>Graceful SIGTERM Drain Sequence</strong> ensuring active worker executions complete before shutdown.</li>
+    </ul>
+  </div>
+
+  <h3>System Topology</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Technology Stack</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Backend API</strong></td>
+        <td>Node.js, Express, TypeScript, Prisma ORM</td>
+        <td>Provides JWT authenticated REST endpoints and feeds live dashboard metrics via Socket.IO.</td>
+      </tr>
+      <tr>
+        <td><strong>Worker Daemon</strong></td>
+        <td>TypeScript, HTTP & Data Processing executors</td>
+        <td>Greedy poller that claims, executes, logs, and reports CPU/RAM heartbeats.</td>
+      </tr>
+      <tr>
+        <td><strong>Admin Dashboard</strong></td>
+        <td>React (Vite), Tailwind CSS, Recharts, Socket.IO Client</td>
+        <td>Real-time panel showing throughput metrics, worker heaps, and DLQ management.</td>
+      </tr>
+      <tr>
+        <td><strong>Database</strong></td>
+        <td>PostgreSQL 15 (Alpine)</td>
+        <td>State storage handling schema migration history, locking, and execution audits.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-break"></div>
+
+  <!-- ================= SECTION 2 ================= -->
+  <h2>2. 3NF Database Schema Design</h2>
+  <p>
+    The database schema is structured strictly in 3rd Normal Form (3NF) to avoid data redundancy and ensure transactional integrity. Enums and relations enforce rigid validation at the database level.
+  </p>
+
+  <h3>Entity Relationship Definitions</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Table Name</th>
+        <th>Primary Key</th>
+        <th>Relations / Foreign Keys</th>
+        <th>Description & Indexing</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>users</strong></td>
+        <td>id (UUID)</td>
+        <td>orgId ➡️ organizations(id)</td>
+        <td>System administrators with role-based auth (ADMIN, MANAGER, USER).</td>
+      </tr>
+      <tr>
+        <td><strong>projects</strong></td>
+        <td>id (UUID)</td>
+        <td>orgId ➡️ organizations(id)</td>
+        <td>Logical isolation boundaries for user jobs and configurations.</td>
+      </tr>
+      <tr>
+        <td><strong>queues</strong></td>
+        <td>id (UUID)</td>
+        <td>projectId, defaultRetryPolicyId</td>
+        <td>Independent channels with unique concurrency and priority limits.</td>
+      </tr>
+      <tr>
+        <td><strong>jobs</strong></td>
+        <td>id (UUID)</td>
+        <td>queueId, projectId, workerId</td>
+        <td>Tasks representing payload, state, priority, and run schedules. Indexed on <code>(status, run_at)</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>job_dependencies</strong></td>
+        <td>parentJobId, childJobId</td>
+        <td>Composite PK linking parent to child</td>
+        <td>Dependency mapping enforcing Directed Acyclic Graph (DAG) execution constraints.</td>
+      </tr>
+      <tr>
+        <td><strong>job_executions</strong></td>
+        <td>id (UUID)</td>
+        <td>jobId ➡️ jobs(id)</td>
+        <td>Execution audits tracking start, finish, worker node, duration, and stack traces.</td>
+      </tr>
+      <tr>
+        <td><strong>workers</strong></td>
+        <td>id (String)</td>
+        <td>Unique ID</td>
+        <td>Active worker daemons tracking load factors and operational states.</td>
+      </tr>
+      <tr>
+        <td><strong>dead_letter_entries</strong></td>
+        <td>id (UUID)</td>
+        <td>jobId ➡️ jobs(id)</td>
+        <td>Storage for permanently failed tasks with AI analysis logs.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Prisma Schema Model (DDL Definition)</h3>
+  <pre><code>model Job {
+  id             String          @id @default(uuid())
+  queueId        String
+  queue          Queue           @relation(fields: [queueId], references: [id], onDelete: Cascade)
+  type           JobType
+  status         JobStatus       @default(QUEUED)
+  payload        Json?
+  priority       Int             @default(0)
+  attemptCount   Int             @default(0)
+  maxAttempts    Int             @default(3)
+  runAt          DateTime        @default(now())
+  workerId       String?
+  worker         Worker?         @relation(fields: [workerId], references: [id], onDelete: SetNull)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  dependencies   JobDependency[] @relation("ChildJobs")
+  blockedJobs    JobDependency[] @relation("ParentJobs")
+  executions     JobExecution[]
+
+  @@index([status, runAt])
+  @@index([queueId, status])
+}</code></pre>
+
+  <div class="page-break"></div>
+
+  <!-- ================= SECTION 3 ================= -->
+  <h2>3. Distributed Concurrency & Claim Locking</h2>
+  <p>
+    In a distributed environment with multiple worker nodes polling the same database, race conditions can cause multiple workers to claim the same job or exceed queue capacity limits. 
+  </p>
+  <p>
+    This platform resolves these issues through a <strong>Double-Lock Transactional Claim Algorithm</strong> implemented in SQL:
+  </p>
+  
+  <h3>The Locking Workflow</h3>
+  <ol>
+    <li>
+      <strong>Queue Lock (Mutex)</strong>: The worker starts a transaction and selects the target queue for update:
+      <pre><code>SELECT * FROM "queues" WHERE "id" = $1 FOR UPDATE</code></pre>
+      This blocks other workers from evaluating this queue's capacity concurrently.
+    </li>
+    <li>
+      <strong>Capacity Evaluation</strong>: The worker counts the number of running jobs in this queue. If <code>runningCount >= maxConcurrency</code>, the transaction is committed, release the queue lock, and the worker moves to the next queue.
+    </li>
+    <li>
+      <strong>Atomic Job Selection (Skip Locked)</strong>: If capacity allows, the worker queries a single qualifying job using row-level locking:
+      <pre><code>SELECT "id" FROM "jobs" 
+WHERE "queueId" = $1 
+  AND "status" = 'QUEUED' 
+  AND "runAt" <= NOW()
+  AND NOT EXISTS (
+    SELECT 1 FROM "job_dependencies" jd
+    JOIN "jobs" p ON p.id = jd."parentJobId"
+    WHERE jd."childJobId" = jobs.id AND p.status != 'COMPLETED'
+  )
+ORDER BY "priority" DESC, "runAt" ASC 
+LIMIT 1 FOR UPDATE SKIP LOCKED</code></pre>
+      The <code>SKIP LOCKED</code> clause guarantees that if another worker is currently claiming a specific job, this worker will immediately skip it and claim the next available job in the queue, completely eliminating locking contention and double-claiming.
+    </li>
+  </ol>
+
+  <div class="page-break"></div>
+
+  <!-- ================= SECTION 4 ================= -->
+  <h2>4. Fault Tolerance, Retry Backoffs & Dead Letter Queue (DLQ)</h2>
+  <p>
+    Robust error handling and automatic recovery are key metrics of production-grade systems. The platform implements a complete fault-tolerance loop including retry policies, dead-worker recovery, and dead-letter promotions.
+  </p>
+
+  <h3>Retry Backoff Implementation</h3>
+  <p>
+    When a job execution fails, the worker calculates the delay before the next attempt using the queue's default policy:
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Retry Strategy</th>
+        <th>Formula</th>
+        <th>Parameters Used</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>FIXED</strong></td>
+        <td>\(Delay = BaseDelay\)</td>
+        <td><code>baseDelayMs</code></td>
+      </tr>
+      <tr>
+        <td><strong>LINEAR</strong></td>
+        <td>\(Delay = BaseDelay \times Attempt\)</td>
+        <td><code>baseDelayMs</code>, <code>maxDelayMs</code></td>
+      </tr>
+      <tr>
+        <td><strong>EXPONENTIAL</strong></td>
+        <td>\(Delay = \min(BaseDelay \times 2^{(Attempt - 1)}, MaxDelay)\)</td>
+        <td><code>baseDelayMs</code>, <code>maxDelayMs</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Dead Worker Reaper Service</h3>
+  <p>
+    If a worker node crashes mid-execution:
+  </p>
+  <ol>
+    <li>The worker's heartbeat ceases.</li>
+    <li>The API's background **Dead Worker Reaper Service** runs every 10 seconds. It detects workers whose last heartbeat is older than 15 seconds.</li>
+    <li>The reaper marks the worker node as `DEAD` and reclaims any jobs currently marked as `RUNNING` under that worker.</li>
+    <li>If the job has retry attempts remaining, it is returned to `QUEUED` status with an exponential backoff delay. If attempts are exhausted, it is moved to the **Dead Letter Queue (DLQ)**.</li>
+  </ol>
+
+  <h3>Dead Letter Queue (DLQ) & AI Summaries</h3>
+  <p>
+    Jobs that fail all attempts are moved to the <code>dead_letter_entries</code> table. When promoted, the backend triggers an asynchronous call to the **Gemini 1.5 Flash API**. The AI reads the final error message and stack trace, diagnoses the root cause, and writes a human-readable diagnosis report to the DLQ entry, allowing operators to understand and resolve failures instantly.
+  </p>
+
+  <div class="page-break"></div>
+
+  <!-- ================= SECTION 5 ================= -->
+  <h2>5. API Specification & Setup Guide</h2>
+  <p>
+    The backend provides a comprehensive, JWT-secured RESTful API documented under the OpenAPI 3.0 specification.
+  </p>
+
+  <h3>Core Endpoints</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Endpoint</th>
+        <th>Auth Guard</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/auth/login</code></td>
+        <td>Public</td>
+        <td>Authenticates administrator and returns JWT Access + Refresh tokens.</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/jobs</code></td>
+        <td>JWT</td>
+        <td>Submits a job (Immediate, Delayed, DAG). Supports idempotency keys.</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/jobs/:id/cancel</code></td>
+        <td>JWT</td>
+        <td>Cancels a queued or running job. Sends SIGTERM to running worker thread.</td>
+      </tr>
+      <tr>
+        <td><code>GET</code></td>
+        <td><code>/api/workers</code></td>
+        <td>JWT</td>
+        <td>Returns active worker list, CPU/RAM telemetry history, and workload counts.</td>
+      </tr>
+      <tr>
+        <td><code>POST</code></td>
+        <td><code>/api/dlq/retry-bulk</code></td>
+        <td>JWT</td>
+        <td>Retries a list of DLQ jobs, re-queueing them in their original queues.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Manual Verification Protocol</h3>
+  <p>
+    To verify that all features work correctly, launch the Docker environment (<code>docker compose up --build</code>) and follow this verification protocol:
+  </p>
+  <ol>
+    <li>
+      <strong>Submit a Failing Job</strong>: Go to **Job Explorer** ➡️ click **Submit Job** ➡️ select queue `flaky-queue` ➡️ set payload JSON:
+      <pre><code>{ "flaky": true, "failureRate": 1.0, "errorMessage": "Network Timeout!" }</code></pre>
+      Click **Queue Job**. Click on the job to slide open details and watch attempts increment and backoff calculation take place.
+    </li>
+    <li>
+      <strong>Inspect AI DLQ Summary</strong>: Once the job fails 3 times, click on the **Dead Letter Queue** tab. Click the failed job card and observe the <strong>AI Failure Diagnosis</strong> card summarizing the cause and resolution.
+    </li>
+    <li>
+      <strong>Test DAG Workflow Blocking</strong>: Submit a parent job in the `default` queue. Copy its Job ID. Submit a second job, placing the parent's Job ID in the **Depends On Job IDs** field. Observe the child job remaining in `QUEUED` status until the parent transitions to `COMPLETED`.
+    </li>
+  </ol>
+
+</body>
+</html>
