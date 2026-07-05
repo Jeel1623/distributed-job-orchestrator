@@ -1,0 +1,17 @@
+{
+  "name": "distributed-job-scheduler-root",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "worker",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:worker": "npm run dev --workspace=worker",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "build:all": "npm run build --workspaces",
+    "test:backend": "npm run test --workspace=backend"
+  }
+}

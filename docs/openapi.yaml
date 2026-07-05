@@ -1,0 +1,382 @@
+openapi: 3.0.3
+info:
+  title: Distributed Job Scheduling Platform API
+  description: Production-grade distributed job scheduling platform API documentation.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Local API Server
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user and organization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - orgName
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minimum: 6
+                orgName:
+                  type: string
+                role:
+                  type: string
+                  enum: [ADMIN, MEMBER]
+      responses:
+        '201':
+          description: User and Organization registered successfully
+        '409':
+          description: Email already in use
+        '400':
+          description: Invalid parameters
+
+  /auth/login:
+    post:
+      summary: Log in to obtain JWT access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Auth success
+        '401':
+          description: Invalid credentials
+
+  /auth/refresh:
+    post:
+      summary: Refresh JWT access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed
+        '401':
+          description: Invalid refresh token
+
+  /projects:
+    get:
+      summary: List all projects in organization
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of projects
+    post:
+      summary: Create a project
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Project created
+
+  /queues:
+    get:
+      summary: List all queues
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of queues
+    post:
+      summary: Create a queue
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - projectId
+              properties:
+                name:
+                  type: string
+                projectId:
+                  type: string
+                priority:
+                  type: integer
+                  default: 1
+                maxConcurrency:
+                  type: integer
+                  default: 5
+                defaultRetryPolicyId:
+                  type: string
+      responses:
+        '201':
+          description: Queue created
+
+  /queues/{id}/pause:
+    post:
+      summary: Pause a queue
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Queue paused
+
+  /queues/{id}/resume:
+    post:
+      summary: Resume a queue
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Queue resumed
+
+  /queues/{id}/stats:
+    get:
+      summary: Get queue statistics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Queue statistics
+
+  /jobs:
+    get:
+      summary: List jobs with filters and pagination
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: queueId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated job list
+    post:
+      summary: Create a job (Immediate or Delayed)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - queueId
+              properties:
+                queueId:
+                  type: string
+                payload:
+                  type: object
+                priority:
+                  type: integer
+                runAt:
+                  type: string
+                  format: date-time
+                idempotencyKey:
+                  type: string
+                dependsOnJobIds:
+                  type: array
+                  items:
+                    type: string
+                maxAttempts:
+                  type: integer
+      responses:
+        '201':
+          description: Job created
+
+  /jobs/batch:
+    post:
+      summary: Submit a batch of jobs
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - queueId
+                - jobs
+              properties:
+                queueId:
+                  type: string
+                jobs:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - payload
+                    properties:
+                      payload:
+                        type: object
+                      priority:
+                        type: integer
+                      idempotencyKey:
+                        type: string
+      responses:
+        '201':
+          description: Batch created
+
+  /jobs/{id}/retry:
+    post:
+      summary: Retry a failed or DLQ job
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job scheduled for retry
+
+  /jobs/{id}/cancel:
+    post:
+      summary: Cancel a queued or scheduled job
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job cancelled
+
+  /workers:
+    get:
+      summary: List all worker nodes and status
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of workers
+
+  /dlq:
+    get:
+      summary: List all Dead Letter Queue entries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of DLQ entries
+
+  /dlq/{jobId}/retry:
+    post:
+      summary: Retry a job from the DLQ
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job retried
+
+  /dlq/{jobId}:
+    delete:
+      summary: Permanently delete a job from the DLQ
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Job deleted
+
+  /metrics/summary:
+    get:
+      summary: Get system health and metrics summary
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: System metrics summary
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

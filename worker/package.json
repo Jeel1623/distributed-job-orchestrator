@@ -1,0 +1,22 @@
+{
+  "name": "worker",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "backend": "*",
+    "dotenv": "^16.4.5",
+    "nodemailer": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "@types/nodemailer": "^8.0.1",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
+  }
+}

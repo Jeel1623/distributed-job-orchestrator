@@ -1,0 +1,81 @@
+services:
+  # 1. Express API Backend
+  - type: web
+    name: scheduler-backend
+    plan: free
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: .
+    port: 5000
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: scheduler-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false # Set manually in Render dashboard if needed
+
+  # 2. Standalone Worker 1
+  - type: worker
+    name: scheduler-worker-1
+    plan: free
+    env: docker
+    dockerfilePath: worker/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: scheduler-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: WORKER_ID
+        value: worker-1
+
+  # 3. Standalone Worker 2
+  - type: worker
+    name: scheduler-worker-2
+    plan: free
+    env: docker
+    dockerfilePath: worker/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: scheduler-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: WORKER_ID
+        value: worker-2
+
+  # 4. Vite React Frontend (Served via Nginx)
+  - type: web
+    name: scheduler-frontend
+    plan: free
+    env: docker
+    dockerfilePath: frontend/Dockerfile
+    dockerContext: .
+    port: 80
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: scheduler-backend
+          property: host
+      - key: VITE_SOCKET_URL
+        fromService:
+          type: web
+          name: scheduler-backend
+          property: host
+
+databases:
+  - name: scheduler-db
+    plan: free
+    ipAllowList: [] # Strict access: only internal Render services can connect

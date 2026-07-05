@@ -1,0 +1,403 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1350 850" width="100%" height="100%" style="background-color: #0f172a; font-family: system-ui, -apple-system, sans-serif;">
+  <defs>
+    <linearGradient id="header-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="header-gradient-worker" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="header-gradient-job" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="header-gradient-dlq" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#b91c1c" />
+    </linearGradient>
+    <marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6">
+      <circle cx="5" cy="5" r="3" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <style>
+    .table-card { fill: #1e293b; stroke: #334155; stroke-width: 1.5; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3)); }
+    .table-title { font-size: 13px; font-weight: bold; fill: #ffffff; }
+    .col-name { font-size: 11px; fill: #e2e8f0; }
+    .col-type { font-size: 11px; fill: #64748b; font-family: monospace; }
+    .col-key { font-size: 10px; font-weight: bold; fill: #f59e0b; }
+    .relationship-line { stroke: #475569; stroke-width: 1.5; stroke-dasharray: 4 4; fill: none; }
+  </style>
+
+  <!-- Title -->
+  <text x="50" y="35" font-size="20" font-weight="bold" fill="#f8fafc">Job Scheduler ER Diagram</text>
+
+  <!-- 1. Organization -->
+  <g transform="translate(50, 60)">
+    <rect width="200" height="110" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient)" />
+    <text x="12" y="20" class="table-title">Organization</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="32" y="68" class="col-name">name</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">created_at</text>
+    <text x="130" y="88" class="col-type">DateTime</text>
+  </g>
+
+  <!-- 2. User -->
+  <g transform="translate(50, 210)">
+    <rect width="200" height="150" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient)" />
+    <text x="12" y="20" class="table-title">User</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="32" y="68" class="col-name">email</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">password_hash</text>
+    <text x="130" y="88" class="col-type">String</text>
+    
+    <text x="12" y="108" class="col-key">FK</text>
+    <text x="32" y="108" class="col-name">org_id</text>
+    <text x="130" y="108" class="col-type">String</text>
+    
+    <text x="32" y="128" class="col-name">role</text>
+    <text x="130" y="128" class="col-type">Role (Enum)</text>
+  </g>
+
+  <!-- 3. Project -->
+  <g transform="translate(300, 60)">
+    <rect width="200" height="110" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient)" />
+    <text x="12" y="20" class="table-title">Project</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="32" y="68" class="col-name">name</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="12" y="88" class="col-key">FK</text>
+    <text x="32" y="88" class="col-name">org_id</text>
+    <text x="130" y="88" class="col-type">String</text>
+  </g>
+
+  <!-- 4. Queue -->
+  <g transform="translate(550, 60)">
+    <rect width="200" height="190" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient)" />
+    <text x="12" y="20" class="table-title">Queue</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="32" y="68" class="col-name">name</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">priority</text>
+    <text x="130" y="88" class="col-type">Int</text>
+    
+    <text x="32" y="108" class="col-name">max_concurrency</text>
+    <text x="130" y="108" class="col-type">Int</text>
+    
+    <text x="32" y="128" class="col-name">is_paused</text>
+    <text x="130" y="128" class="col-type">Boolean</text>
+    
+    <text x="12" y="148" class="col-key">FK</text>
+    <text x="32" y="148" class="col-name">project_id</text>
+    <text x="130" y="148" class="col-type">String</text>
+    
+    <text x="12" y="168" class="col-key">FK</text>
+    <text x="32" y="168" class="col-name">default_retry_id</text>
+    <text x="130" y="168" class="col-type">String</text>
+  </g>
+
+  <!-- 5. RetryPolicy -->
+  <g transform="translate(800, 60)">
+    <rect width="200" height="150" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient)" />
+    <text x="12" y="20" class="table-title">RetryPolicy</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="32" y="68" class="col-name">strategy</text>
+    <text x="130" y="68" class="col-type">Strategy(Enum)</text>
+    
+    <text x="32" y="88" class="col-name">base_delay_ms</text>
+    <text x="130" y="88" class="col-type">Int</text>
+    
+    <text x="32" y="108" class="col-name">max_retries</text>
+    <text x="130" y="108" class="col-type">Int</text>
+    
+    <text x="32" y="128" class="col-name">max_delay_ms</text>
+    <text x="130" y="128" class="col-type">Int</text>
+  </g>
+
+  <!-- 6. Job -->
+  <g transform="translate(550, 310)">
+    <rect width="200" height="310" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient-job)" />
+    <text x="12" y="20" class="table-title">Job (Core Queue)</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="12" y="68" class="col-key">FK</text>
+    <text x="32" y="68" class="col-name">queue_id</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">status</text>
+    <text x="130" y="88" class="col-type">Status (Enum)</text>
+    
+    <text x="32" y="108" class="col-name">type</text>
+    <text x="130" y="108" class="col-type">Type (Enum)</text>
+    
+    <text x="32" y="128" class="col-name">payload</text>
+    <text x="130" y="128" class="col-type">Json</text>
+    
+    <text x="32" y="148" class="col-name">priority</text>
+    <text x="130" y="148" class="col-type">Int</text>
+    
+    <text x="32" y="168" class="col-name">run_at</text>
+    <text x="130" y="168" class="col-type">DateTime</text>
+    
+    <text x="32" y="188" class="col-name">cron_expression</text>
+    <text x="130" y="188" class="col-type">String?</text>
+    
+    <text x="32" y="208" class="col-name">batch_id</text>
+    <text x="130" y="208" class="col-type">String?</text>
+    
+    <text x="32" y="228" class="col-name">attempt_count</text>
+    <text x="130" y="228" class="col-type">Int</text>
+    
+    <text x="32" y="248" class="col-name">max_attempts</text>
+    <text x="130" y="248" class="col-type">Int</text>
+    
+    <text x="32" y="268" class="col-name">idempotency_key</text>
+    <text x="130" y="268" class="col-type">String?</text>
+    
+    <text x="12" y="288" class="col-key">FK</text>
+    <text x="32" y="288" class="col-name">worker_id</text>
+    <text x="130" y="288" class="col-type">String?</text>
+  </g>
+
+  <!-- 7. JobDependency -->
+  <g transform="translate(300, 310)">
+    <rect width="200" height="90" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient-job)" />
+    <text x="12" y="20" class="table-title">JobDependency (DAG)</text>
+    
+    <text x="12" y="48" class="col-key">PK/FK</text>
+    <text x="50" y="48" class="col-name">parent_job_id</text>
+    <text x="140" y="48" class="col-type">String</text>
+    
+    <text x="12" y="68" class="col-key">PK/FK</text>
+    <text x="50" y="68" class="col-name">child_job_id</text>
+    <text x="140" y="68" class="col-type">String</text>
+  </g>
+
+  <!-- 8. JobExecution -->
+  <g transform="translate(800, 310)">
+    <rect width="200" height="210" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient-job)" />
+    <text x="12" y="20" class="table-title">JobExecution</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="12" y="68" class="col-key">FK</text>
+    <text x="32" y="68" class="col-name">job_id</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">worker_id</text>
+    <text x="130" y="88" class="col-type">String</text>
+    
+    <text x="32" y="108" class="col-name">started_at</text>
+    <text x="130" y="108" class="col-type">DateTime</text>
+    
+    <text x="32" y="128" class="col-name">finished_at</text>
+    <text x="130" y="128" class="col-type">DateTime?</text>
+    
+    <text x="32" y="148" class="col-name">status</text>
+    <text x="130" y="148" class="col-type">Status(Enum)</text>
+    
+    <text x="32" y="168" class="col-name">error_message</text>
+    <text x="130" y="168" class="col-type">String?</text>
+    
+    <text x="32" y="188" class="col-name">duration_ms</text>
+    <text x="130" y="188" class="col-type">Int?</text>
+  </g>
+
+  <!-- 9. Worker -->
+  <g transform="translate(1080, 310)">
+    <rect width="220" height="170" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 214,0 Q 220,0 220,6 L 220,30 L 0,30 Z" fill="url(#header-gradient-worker)" />
+    <text x="12" y="20" class="table-title">Worker</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="140" y="48" class="col-type">String</text>
+    
+    <text x="32" y="68" class="col-name">hostname</text>
+    <text x="140" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">status</text>
+    <text x="140" y="88" class="col-type">WorkerStatus</text>
+    
+    <text x="32" y="108" class="col-name">last_heartbeat_at</text>
+    <text x="140" y="108" class="col-type">DateTime</text>
+    
+    <text x="32" y="128" class="col-name">concurrency_capacity</text>
+    <text x="140" y="128" class="col-type">Int</text>
+    
+    <text x="32" y="148" class="col-name">current_load</text>
+    <text x="140" y="148" class="col-type">Int</text>
+  </g>
+
+  <!-- 10. WorkerHeartbeat -->
+  <g transform="translate(1080, 520)">
+    <rect width="220" height="130" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 214,0 Q 220,0 220,6 L 220,30 L 0,30 Z" fill="url(#header-gradient-worker)" />
+    <text x="12" y="20" class="table-title">WorkerHeartbeat</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="140" y="48" class="col-type">String</text>
+    
+    <text x="12" y="68" class="col-key">FK</text>
+    <text x="32" y="68" class="col-name">worker_id</text>
+    <text x="140" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">timestamp</text>
+    <text x="140" y="88" class="col-type">DateTime</text>
+    
+    <text x="32" y="108" class="col-name">cpu_usage</text>
+    <text x="140" y="108" class="col-type">Float?</text>
+  </g>
+
+  <!-- 11. JobLog -->
+  <g transform="translate(800, 560)">
+    <rect width="200" height="150" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient-job)" />
+    <text x="12" y="20" class="table-title">JobLog</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="12" y="68" class="col-key">FK</text>
+    <text x="32" y="68" class="col-name">job_id</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="12" y="88" class="col-key">FK</text>
+    <text x="32" y="88" class="col-name">execution_id</text>
+    <text x="130" y="88" class="col-type">String?</text>
+    
+    <text x="32" y="108" class="col-name">timestamp</text>
+    <text x="130" y="108" class="col-type">DateTime</text>
+    
+    <text x="32" y="128" class="col-name">message</text>
+    <text x="130" y="128" class="col-type">String</text>
+  </g>
+
+  <!-- 12. ScheduledJob -->
+  <g transform="translate(50, 400)">
+    <rect width="200" height="190" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient-job)" />
+    <text x="12" y="20" class="table-title">ScheduledJob</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="32" y="68" class="col-name">name</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">cron_expression</text>
+    <text x="130" y="88" class="col-type">String</text>
+    
+    <text x="32" y="108" class="col-name">next_run_at</text>
+    <text x="130" y="108" class="col-type">DateTime</text>
+    
+    <text x="12" y="128" class="col-key">FK</text>
+    <text x="32" y="128" class="col-name">queue_id</text>
+    <text x="130" y="128" class="col-type">String</text>
+    
+    <text x="32" y="148" class="col-name">payload</text>
+    <text x="130" y="148" class="col-type">Json</text>
+  </g>
+
+  <!-- 13. DeadLetterEntry -->
+  <g transform="translate(300, 480)">
+    <rect width="200" height="190" rx="6" class="table-card" />
+    <path d="M 0,6 Q 0,0 6,0 L 194,0 Q 200,0 200,6 L 200,30 L 0,30 Z" fill="url(#header-gradient-dlq)" />
+    <text x="12" y="20" class="table-title">DeadLetterEntry</text>
+    
+    <text x="12" y="48" class="col-key">PK</text>
+    <text x="32" y="48" class="col-name">id</text>
+    <text x="130" y="48" class="col-type">String</text>
+    
+    <text x="12" y="68" class="col-key">FK/UQ</text>
+    <text x="32" y="68" class="col-name">job_id</text>
+    <text x="130" y="68" class="col-type">String</text>
+    
+    <text x="32" y="88" class="col-name">final_error</text>
+    <text x="130" y="88" class="col-type">String?</text>
+    
+    <text x="12" y="108" class="col-key">FK</text>
+    <text x="32" y="108" class="col-name">original_queue_id</text>
+    <text x="130" y="108" class="col-type">String</text>
+    
+    <text x="32" y="128" class="col-name">payload_snapshot</text>
+    <text x="130" y="128" class="col-type">Json</text>
+    
+    <text x="32" y="148" class="col-name">ai_summary</text>
+    <text x="130" y="148" class="col-type">String?</text>
+  </g>
+
+  <!-- Relationships / Lines -->
+  <!-- Org -> User -->
+  <path d="M 150,170 L 150,210" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Org -> Project -->
+  <path d="M 250,115 L 300,115" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Project -> Queue -->
+  <path d="M 500,115 L 550,115" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- RetryPolicy -> Queue -->
+  <path d="M 800,135 L 750,135" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Queue -> Job -->
+  <path d="M 650,250 L 650,310" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Job -> JobDependency Parent -->
+  <path d="M 550,355 L 500,355" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Job -> JobExecution -->
+  <path d="M 750,415 L 800,415" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Job -> JobLog -->
+  <path d="M 710,620 L 710,660 L 800,660" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- JobExecution -> JobLog -->
+  <path d="M 900,520 L 900,560" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Worker -> Job -->
+  <path d="M 1080,395 L 750,395" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Worker -> WorkerHeartbeat -->
+  <path d="M 1190,480 L 1190,520" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Job -> DeadLetterEntry -->
+  <path d="M 550,530 L 500,530" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <!-- Queue -> ScheduledJob -->
+  <path d="M 550,190 L 150,190 L 150,400" class="relationship-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+</svg>
