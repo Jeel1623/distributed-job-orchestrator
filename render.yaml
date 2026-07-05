@@ -6,7 +6,6 @@ services:
     env: docker
     dockerfilePath: backend/Dockerfile
     dockerContext: .
-    port: 5000
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -62,7 +61,6 @@ services:
     env: docker
     dockerfilePath: frontend/Dockerfile
     dockerContext: .
-    port: 80
     envVars:
       - key: VITE_API_URL
         fromService:
